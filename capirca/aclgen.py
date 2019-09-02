@@ -34,6 +34,7 @@ from capirca.lib import arista
 from capirca.lib import aruba
 from capirca.lib import brocade
 from capirca.lib import cisco
+from capirca.lib import cisconxos
 from capirca.lib import ciscoasa
 from capirca.lib import ciscoxr
 from capirca.lib import cloudarmor
@@ -155,6 +156,7 @@ def RenderFile(input_file, output_directory, definitions,
   pol = None
   jcl = False
   acl = False
+  nxacl = False
   asacl = False
   aacl = False
   bacl = False
@@ -201,6 +203,8 @@ def RenderFile(input_file, output_directory, definitions,
     jcl = copy.deepcopy(pol)
   if 'cisco' in platforms:
     acl = copy.deepcopy(pol)
+  if 'cisconxos' in platforms:
+    nxacl = copy.deepcopy(pol)
   if 'ciscoasa' in platforms:
     asacl = copy.deepcopy(pol)
   if 'brocade' in platforms:
@@ -253,6 +257,10 @@ def RenderFile(input_file, output_directory, definitions,
                 input_file, write_files)
     if acl:
       acl_obj = cisco.Cisco(acl, exp_info)
+      RenderACL(str(acl_obj), acl_obj.SUFFIX, output_directory,
+                input_file, write_files)
+    if nxacl:
+      acl_obj = cisconxos.CiscoNxOS(nxacl, exp_info)
       RenderACL(str(acl_obj), acl_obj.SUFFIX, output_directory,
                 input_file, write_files)
     if asacl:

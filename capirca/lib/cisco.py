@@ -802,6 +802,8 @@ class Term(aclgenerator.Term):
     """
     if isinstance(addr, nacaddr.IPv4) or isinstance(addr,
                                                     ipaddress.IPv4Network):
+      if self.platform == 'cisconxos':
+        return addr.with_prefixlen
       if addr.num_addresses > 1:
         if self.platform == 'arista':
           return addr.with_prefixlen
@@ -834,6 +836,9 @@ class Term(aclgenerator.Term):
     if self.platform == 'arista':
       port0 = PortMap.GetProtocol(port0, proto, self.platform)
       port1 = PortMap.GetProtocol(port1, proto, self.platform)
+    elif self.platform == 'cisconxos':
+      port0 = PortMap.GetProtocol(port0, proto)
+      port1 = PortMap.GetProtocol(port1, proto)
 
     if port[0] != port[1]:
       return 'range %s %s' % (port0, port1)
