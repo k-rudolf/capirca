@@ -41,7 +41,7 @@ class CiscoNxOS(cisco.Cisco):
   _PLATFORM = 'cisconxos'
   SUFFIX = '.nxacl'
   # Protocols should be emitted as they were in the policy (names).
-  _PROTO_INT = False
+  _PROTO_INT = True
 
   # Cisco Nexus omits the "extended" access-list argument.
   def _AppendTargetByFilterType(self, filter_name, filter_type):
