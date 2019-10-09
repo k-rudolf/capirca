@@ -557,6 +557,22 @@ class PortMap(object):
   }
   _CISCO_PORTS_UDP.update(_PORTS_UDP)
 
+  # Conbine cisconxos-specific port mappings with common ones and remove some of the common ones
+  _CISCONXOS_PORTS_TCP = {
+      3949: "drip",
+      101: "hostname",
+      37: "time"
+  }
+  _CISCONXOS_PORTS_TCP.update(_PORTS_TCP)
+  del _CISCONXOS_PORTS_TCP[443]
+  del _CISCONXOS_PORTS_TCP[389]
+  del _CISCONXOS_PORTS_TCP[636]
+  del _CISCONXOS_PORTS_TCP[2049]
+  del _CISCONXOS_PORTS_TCP[1723]
+  del _CISCONXOS_PORTS_TCP[22]
+
+
+
   # Combine arista-specific port mappings with common ones
   _ARISTA_PORTS_TCP = {
       143: 'imap',
@@ -580,6 +596,11 @@ class PortMap(object):
       'arista': {
           'tcp': _ARISTA_PORTS_TCP,
           'udp': _ARISTA_PORTS_UDP,
+          'icmp': _TYPES_ICMP
+      },
+      'cisconxos': {
+          'tcp': _CISCONXOS_PORTS_TCP,
+          'udp': _CISCO_PORTS_UDP,
           'icmp': _TYPES_ICMP
       }
   }
@@ -833,7 +854,7 @@ class Term(aclgenerator.Term):
       return ''
     port0 = port[0]
     port1 = port[1]
-    if self.platform == 'arista':
+    if self.platform == 'arista' or self.platform == 'cisconxos':
       port0 = PortMap.GetProtocol(port0, proto, self.platform)
       port1 = PortMap.GetProtocol(port1, proto, self.platform)
     elif self.platform == 'cisconxos':
