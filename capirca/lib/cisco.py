@@ -557,7 +557,7 @@ class PortMap(object):
   }
   _CISCO_PORTS_UDP.update(_PORTS_UDP)
 
-  # Conbine cisconxos-specific port mappings with common ones and remove some of the common ones
+  # Combine cisconxos-specific port mappings with common ones and remove some of the common ones
   _CISCONXOS_PORTS_TCP = {
       3949: "drip",
       101: "hostname",
@@ -571,7 +571,12 @@ class PortMap(object):
   del _CISCONXOS_PORTS_TCP[1723]
   del _CISCONXOS_PORTS_TCP[22]
 
-
+  _CISCONXOS_PORTS_UDP = {
+      139: "netbios-ss",
+      4500: "non500-isakmp"
+  }
+  _CISCONXOS_PORTS_UDP.update(_PORTS_UDP)
+  del _CISCONXOS_PORTS_UDP[2049]
 
   # Combine arista-specific port mappings with common ones
   _ARISTA_PORTS_TCP = {
@@ -600,7 +605,7 @@ class PortMap(object):
       },
       'cisconxos': {
           'tcp': _CISCONXOS_PORTS_TCP,
-          'udp': _CISCO_PORTS_UDP,
+          'udp': _CISCONXOS_PORTS_UDP,
           'icmp': _TYPES_ICMP
       }
   }
