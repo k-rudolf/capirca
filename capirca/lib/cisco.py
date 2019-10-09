@@ -649,6 +649,16 @@ class Term(aclgenerator.Term):
     else:
       self.text_af = 'inet6'
 
+    if self.platform == "cisconxos":
+      self.ALLOWED_PROTO_STRINGS_NXOS = self.ALLOWED_PROTO_STRINGS.copy()
+      #remove ports from allowed-ports which are not supported as strings on cisconxos
+      self.ALLOWED_PROTO_STRINGS_NXOS.remove("igrp")
+      self.ALLOWED_PROTO_STRINGS_NXOS.remove("ipinip")
+      self.ALLOWED_PROTO_STRINGS_NXOS.remove("sctp")
+      # add port to allowed-ports which are supported as strings on cisconxos
+      self.ALLOWED_PROTO_STRINGS_NXOS.append("esp")
+      self.ALLOWED_PROTO_STRINGS_NXOS.append("pcp")
+
   def __str__(self):
     # Verify platform specific terms. Skip whole term if platform does not
     # match.
@@ -697,9 +707,14 @@ class Term(aclgenerator.Term):
     elif self.term.protocol == ['hopopt']:
       protocol = ['hbh']
     elif self.proto_int:
-      protocol = [proto if proto in self.ALLOWED_PROTO_STRINGS
-                  else self.PROTO_MAP.get(proto)
-                  for proto in self.term.protocol]
+      if self.platform == "cisconxos":
+        protocol = [proto if proto in self.ALLOWED_PROTO_STRINGS_NXOS
+                    else self.PROTO_MAP.get(proto)
+                    for proto in self.term.protocol]
+      else:
+        protocol = [proto if proto in self.ALLOWED_PROTO_STRINGS
+                    else self.PROTO_MAP.get(proto)
+                    for proto in self.term.protocol]
     # Arista can not process acls with esp/ah, these must appear as integers.
     elif self.platform == 'arista' and self.term.protocol == ['esp']:
       protocol = ['50']
