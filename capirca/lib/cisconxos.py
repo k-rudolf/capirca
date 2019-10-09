@@ -78,3 +78,12 @@ class CiscoNxOS(cisco.Cisco):
           'access list type %s not supported by %s' % (
               filter_type, self._PLATFORM))
     return target
+  def _GetObjectGroupTerm(self, term, filter_name, verbose=True):
+    """Returns an ObjectGroupTerm object."""
+    return CiscoNXOSObjectGroupTerm(term, filter_name, verbose=verbose)
+
+class CiscoNXOSObjectGroupTerm(cisco.ObjectGroupTerm):
+  ALLOWED_PROTO_STRINGS = cisco.Term.ALLOWED_PROTO_STRINGS + ['pcp', 'esp']
+  ALLOWED_PROTO_STRINGS.remove("igrp")
+  ALLOWED_PROTO_STRINGS.remove("ipinip")
+  ALLOWED_PROTO_STRINGS.remove("sctp")
